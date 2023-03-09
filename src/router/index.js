@@ -36,9 +36,7 @@ const routes = [
 	{
 		path: "/Experience",
 		component: () =>
-			import(
-				/* webpackChunkName: 'MyExperience' */ "../components/MyExperience"
-			),
+			import(/* webpackChunkName: 'MyExperience' */ "../pages/MyExperience"),
 		meta: {
 			title: "經歷",
 		},
