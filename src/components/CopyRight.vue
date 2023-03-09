@@ -1,5 +1,5 @@
 <template>
-	<div class="copyright">
+	<div>
 		<hr />
 		Copyright © {{ year }}
 		<span v-if="isEqual">- {{ time }}</span>
@@ -27,7 +27,7 @@
 	};
 </script>
 <style scoped>
-	.copyright {
+	div {
 		text-align: center;
 	}
 </style>

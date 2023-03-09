@@ -1,74 +1,88 @@
 <template>
 	<div id="app" ref="app">
 		<MyNavigation class="mynav" />
-		<MyList class="mylist" />
-		<MySelector class="myselector" />
+		<keep-alive :includes="['ImgSelector', 'CatchBall']">
+			<router-view class="myproj"></router-view>
+		</keep-alive>
 		<CopyRight class="copyright" />
 	</div>
 </template>
 
 <script>
-	import MyNavigation from "./components/MyNavigation.vue";
-	import MyList from "./components/MyList.vue";
-	import MySelector from "./components/MySelector.vue";
-	import CopyRight from "./components/CopyRight.vue";
+	import MyNavigation from "./components/MyNavigation";
+	import CopyRight from "./components/CopyRight";
 
 	export default {
 		name: "App",
 		components: {
 			MyNavigation,
-			MyList,
-			MySelector,
 			CopyRight,
 		},
 	};
 </script>
 
-<style>
+<style lang="scss">
 	html {
 		box-sizing: border-box;
-	}
+		scroll-behavior: smooth;
+		scroll-padding-top: 6em;
 
-	*,
-	*::before,
-	*::after {
-		box-sizing: inherit;
+		::-webkit-scrollbar {
+			width: 0.8em;
+		}
+
+		::-webkit-scrollbar-track {
+			background: #f1f1f1;
+		}
+
+		::-webkit-scrollbar-thumb {
+			background: #888;
+		}
+
+		::-webkit-scrollbar-thumb:hover {
+			background: #555;
+		}
+
+		*,
+		*::before,
+		*::after {
+			box-sizing: inherit;
+		}
 	}
+	// border: 1px solid limegreen !important;
 
 	body {
 		padding: 0;
 		margin: 0;
-	}
 
-	#app {
-		font-family: Avenir, Helvetica, Arial, sans-serif;
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-		text-align: center;
-		color: #2c3e50;
-		height: 100vh;
-		width: 100vw;
-		display: grid;
-		grid-template: 10% 1fr 5% / 20% 1fr;
-	}
+		a {
+			color: black;
+			text-decoration: none;
+		}
 
-	.mynav {
-		grid-area: 1 / 1 / 2 / 3;
-		border: 1px solid black;
-	}
+		#app {
+			font-family: Avenir, Helvetica, Arial, sans-serif;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			text-align: center;
+			color: black;
+			display: flex;
+			flex-flow: column nowrap;
 
-	.mylist {
-		grid-area: 2 / 1 / 3 / 2;
-		border: 1px solid black;
-	}
+			.mynav {
+				position: fixed;
+				z-index: 1;
+				width: 100%;
+				height: 10vh;
+			}
 
-	.myselect {
-		grid-area: 2 / 2 / 3 / 3;
-		border: 1px solid black;
-	}
-
-	.copyright {
-		grid-area: 3 / 1 / 4 / 3;
-		border: 1px solid black;
+			.myproj {
+				margin-top: 10vh;
+				height: 85vh;
+			}
+			.copyright {
+				height: 5vh;
+			}
+		}
 	}
 </style>

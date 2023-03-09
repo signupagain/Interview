@@ -1,40 +1,33 @@
 <template>
-	<div>
-		<nav>
-			<ul class="nav_ul">
-				<li>
-					<a href="#">&emsp;作品</a>
-					<ul class="project">
-						<li v-for="project in projects" :key="project.id">
-							<a :href="project.href">{{ project.proj }}</a>
-						</li>
-					</ul>
-				</li>
-				<li><a href="#">經歷</a></li>
-				<li><a href="#">聯絡方式</a></li>
-			</ul>
-		</nav>
-	</div>
+	<nav>
+		<ul class="nav_ul">
+			<li>
+				個人作品
+				<ul class="project">
+					<li v-for="project in projects" :key="project.id">
+						<router-link :to="project.to">{{ project.proj }}</router-link>
+					</li>
+				</ul>
+			</li>
+			<li><router-link :to="experience">經歷</router-link></li>
+		</ul>
+	</nav>
 </template>
 
 <script>
-	import { nanoid } from "nanoid";
+	import { mapState } from "vuex";
 
 	export default {
 		name: "MyNavigation",
-		data() {
-			return {
-				projects: [
-					{ id: nanoid(), proj: "選圖界面", href: "#" },
-					{ id: nanoid(), proj: "捕球遊戲", href: "#" },
-				],
-			};
+		computed: {
+			...mapState(["projects", "experience"]),
 		},
 	};
 </script>
 
 <style scoped>
 	ul {
+		height: min-content;
 		list-style: none;
 		margin: 0;
 		padding: 0;
@@ -46,12 +39,12 @@
 	}
 
 	nav {
-		box-sizing: border-box;
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
-		padding: 1em;
 		font-size: 1.5em;
+		color: black;
+		background-color: green;
 	}
 
 	.nav_ul {
@@ -61,25 +54,37 @@
 
 	.nav_ul > li {
 		padding: 0 1em;
-		border-right: 1px solid black;
+		position: relative;
+		cursor: default;
 	}
 
-	.nav_ul > li:last-child {
-		border-right: none;
+	.nav_ul > :not(li:first-child) {
+		border-left: 1px solid black;
 	}
 
 	.project {
-		display: none;
+		visibility: hidden;
+		width: max-content;
+		padding: 0.3em;
+		border-bottom-left-radius: 10px;
+		border-bottom-right-radius: 10px;
+		background-color: green;
+		position: absolute;
+		top: 100%;
+		transform: translate(-7px);
+		opacity: 0;
+		transition: visibility 1s, opacity 1s;
 	}
 
 	.nav_ul > li:first-child:hover .project {
-		display: block;
-		position: absolute;
-		text-align: center;
-		padding: 0.5em 0;
+		visibility: visible;
+		opacity: 1;
+		transition: opacity 1s;
 	}
 
-	.project > li {
-		padding: 0.1em;
+	.project > li:hover ::before {
+		content: "";
+		margin-right: 2px;
+		border-left: 5px solid yellow;
 	}
 </style>
