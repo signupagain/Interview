@@ -22,6 +22,12 @@
 </script>
 
 <style lang="scss">
+	html,
+	body {
+		padding: 0;
+		margin: 0;
+	}
+
 	html {
 		box-sizing: border-box;
 		scroll-behavior: smooth;
@@ -48,12 +54,6 @@
 		*::after {
 			box-sizing: inherit;
 		}
-	}
-	// border: 1px solid limegreen !important;
-
-	body {
-		padding: 0;
-		margin: 0;
 
 		a {
 			color: black;
@@ -79,10 +79,12 @@
 			.myproj {
 				margin-top: 10vh;
 				height: 85vh;
+				overflow: auto;
 			}
 			.copyright {
 				height: 5vh;
 			}
 		}
 	}
+	// border: 1px solid limegreen !important;
 </style>

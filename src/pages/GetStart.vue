@@ -7,9 +7,9 @@
 				<h1>我的面試作品</h1>
 				<p>本作品使用Vue2實現，並部署於Netlify</p>
 				<button @click="getRandomProj">點我隨機查看</button>
-				<button @click="toggleMode">
+				<!-- <button v-show="bg.mode.showButton" @click="toggleMode">
 					{{ bg.mode.name }}
-				</button>
+				</button> -->
 				<p>
 					<a :href="bg.photo_url" target="_blank" rel="noopener noreferrer">
 						Photo by
@@ -44,6 +44,7 @@
 					mode: {
 						name: "隨機更換",
 						inOrder: true,
+						showButton: false,
 					},
 				},
 				loading: {
@@ -68,7 +69,7 @@
 
 					while (true) {
 						yield i++;
-						if (i > max) {
+						if (i === max) {
 							i = 0;
 							yield i++;
 						}
@@ -94,12 +95,12 @@
 					.then((res) => res.data)
 					.catch((err) => {
 						console.log(err.message);
-						// alert('錯誤: 無法進行背景自動轉換')
+						console.error("錯誤: 無法進行背景自動轉換");
 						return null;
 					});
 				return results;
 			},
-			setBg(res, duration = 15) {
+			setBg(res, duration = 10) {
 				if (res === null) this.responseErrorBg();
 				this.loading.alreadyGet = true;
 				if (this.bg.mode.inOrder) {
@@ -109,7 +110,7 @@
 				}
 			},
 			intervalOrderBg(photos, duration) {
-				const indexGenerator = this.makeGenerator(photos.length - 1);
+				const indexGenerator = this.makeGenerator(photos.length);
 
 				this.bg.timer.order = setInterval(() => {
 					const index = indexGenerator.next().value;
@@ -126,12 +127,14 @@
 				}, duration * 1000);
 			},
 			intervalRandomBg(photos, duration) {
+				this.$refs.background.style.removeProperty("animation");
 				this.bg.timer.random = setInterval(() => {
 					const index = this.getRandomInt(photos.length);
 					const photo = photos[index];
 					const attrs = {
 						background: `url(${photo.src.landscape}) no-repeat center`,
 						"background-size": "cover",
+						animation: `fade-in-out ${duration}s ease-in infinite`,
 					};
 					for (let [k, v] of Object.entries(attrs)) {
 						this.$refs.background.style.setProperty(k, v);
@@ -155,26 +158,25 @@
 			},
 			toggleMode() {
 				this.bg.mode.inOrder = !this.bg.mode.inOrder;
-				console.log(this.bg.mode.inOrder);
 			},
 		},
 		watch: {
 			"bg.bgResponse": {
 				handler(value) {
 					this.setBg(value);
+					this.bg.mode.showButton = true;
 				},
 			},
 			"bg.mode": {
-				handler(value, old) {
-					console.log("watch", value, old);
+				handler(value) {
 					if (value.inOrder) {
-						this.bg.mode.name = "隨機更換";
+						value.name = "隨機更換";
 						clearInterval(this.bg.timer.random);
 						this.setBg(this.bg.bgResponse);
 					} else {
 						const randomT = this.bg.timer.random;
 						if (randomT !== 0) clearInterval(this.bg.timer.random);
-						this.bg.mode.name = "依序更換";
+						value.name = "依序更換";
 						clearInterval(this.bg.timer.order);
 						this.setBg(this.bg.bgResponse);
 					}
@@ -186,8 +188,11 @@
 			this.bg.bgResponse = await this.getBg();
 		},
 		beforeDestroy() {
-			clearInterval(this.bg.timer.order);
-			clearInterval(this.bg.timer.random);
+			if (this.bg.mode.inOrder) {
+				clearInterval(this.bg.timer.order);
+			} else {
+				clearInterval(this.bg.timer.random);
+			}
 		},
 		beforeRouteEnter(to, from, next) {
 			next((vc) => {
@@ -207,6 +212,7 @@
 			background: url("https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200")
 				no-repeat center;
 			background-size: cover;
+			animation: fade-in-out 10s linear infinite;
 		}
 
 		section {
@@ -227,6 +233,21 @@
 				padding: 0.5em;
 				font-size: x-large;
 			}
+		}
+	}
+
+	@keyframes fade-in-out {
+		0% {
+			opacity: 0;
+		}
+		30% {
+			opacity: 1;
+		}
+		85% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
 		}
 	}
 </style>
